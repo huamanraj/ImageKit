@@ -1,0 +1,71 @@
+import { Client, Account, Storage, ID, Query, Databases } from "appwrite"; // Add Databases to imports
+
+const client = new Client()
+    .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
+    .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID);
+
+export const account = new Account(client);
+export const storage = new Storage(client);
+export const databases = new Databases(client);
+
+export const uploadImage = async (file, userId) => {
+    try {
+        const uploadedFile = await storage.createFile(
+            import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID,
+            ID.unique(),
+            file,
+            ['read("any")']
+        );
+
+        // Save file metadata in the database
+        await databases.createDocument(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+            ID.unique(),
+            {
+                fileId: uploadedFile.$id,
+                userId: userId,
+                name: file.name
+            }
+        );
+
+        return uploadedFile;
+    } catch (error) {
+        console.error("Upload error:", error);
+        return null;
+    }
+};
+
+export const getImageUrl = (fileId) => {
+    return `http://localhost:5000/image/${fileId}`;
+};
+
+export const listImages = async (userId) => {
+    try {
+        const response = await databases.listDocuments(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+            [Query.equal('userId', userId)]
+        );
+        return response.documents.map(doc => ({
+            $id: doc.fileId,
+            name: doc.name
+        }));
+    } catch (error) {
+        console.error("List images error:", error);
+        return [];
+    }
+};
+
+export const deleteImage = async (fileId) => {
+    try {
+        await storage.deleteFile(
+            import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID,
+            fileId
+        );
+        return true;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
