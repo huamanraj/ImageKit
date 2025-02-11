@@ -88,29 +88,28 @@ const Navbar = () => {
                         <>
                             <NavLink to="/upload" icon={FaUpload} text="Upload" />
                             <NavLink to="/gallery" icon={FaImages} text="Gallery" />
-                            <a
-                                href="https://buzz-sphere.vercel.app"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
-                                         transition-all duration-200 transform hover:scale-105 active:scale-95"
-                            >
-                                <FaShare className="text-lg" />
-                                <span>ShareText</span>
-                            </a>
-                            <a
-                                href="https://snapdrop.vercel.app"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
-                                         transition-all duration-200 transform hover:scale-105 active:scale-95"
-                            >
-                                <FaFileAlt className="text-lg" />
-                                <span>ShareFiles</span>
-                            </a>
                         </>
                     )}
-                    
+                    <a
+                        href="https://buzz-sphere.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
+                                 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                    >
+                        <FaShare className="text-lg" />
+                        <span>ShareText</span>
+                    </a>
+                    <a
+                        href="https://snapdrop.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
+                                 transition-all duration-200 transform hover:scale-105 active:scale-95"
+                    >
+                        <FaFileAlt className="text-lg" />
+                        <span>ShareFiles</span>
+                    </a>
                     {user ? (
                         <button 
                             onClick={handleLogout} 
@@ -119,10 +118,7 @@ const Navbar = () => {
                             disabled={isLoading}
                         >
                             {isLoading ? (
-                                <>
-                                    <div className="w-5 h-5 border-4 border-blue-200 rounded-full animate-spin border-t-blue-500"> </div> 
-                                    </>
-                                
+                                <div className="w-5 h-5 border-4 border-blue-200 rounded-full animate-spin border-t-blue-500"> </div> 
                             ) : (
                                 <>
                                     <FaSignOutAlt className="text-lg" />
@@ -175,31 +171,30 @@ const Navbar = () => {
                         <>
                             <NavLink to="/upload" icon={FaUpload} text="Upload" onClick={toggleMenu} />
                             <NavLink to="/gallery" icon={FaImages} text="Gallery" onClick={toggleMenu} />
-                            <a
-                                href="https://buzz-sphere.vercel.app"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
-                                         transition-all duration-200 transform hover:scale-105 active:scale-95 w-full"
-                                onClick={toggleMenu}
-                            >
-                                <FaShare className="text-lg" />
-                                <span>ShareText</span>
-                            </a>
-                            <a
-                                href="https://snapdrop.vercel.app"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
-                                         transition-all duration-200 transform hover:scale-105 active:scale-95 w-full"
-                                onClick={toggleMenu}
-                            >
-                                <FaFileAlt className="text-lg" />
-                                <span>ShareFiles</span>
-                            </a>
                         </>
                     )}
-                    
+                    <a
+                        href="https://buzz-sphere.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
+                                 transition-all duration-200 transform hover:scale-105 active:scale-95 w-full"
+                        onClick={toggleMenu}
+                    >
+                        <FaShare className="text-lg" />
+                        <span>ShareText</span>
+                    </a>
+                    <a
+                        href="https://snapdrop.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-indigo-100 hover:text-indigo-600 text-gray-200
+                                 transition-all duration-200 transform hover:scale-105 active:scale-95 w-full"
+                        onClick={toggleMenu}
+                    >
+                        <FaFileAlt className="text-lg" />
+                        <span>ShareFiles</span>
+                    </a>
                     {user ? (
                         <button 
                             onClick={() => { handleLogout(); toggleMenu(); }}

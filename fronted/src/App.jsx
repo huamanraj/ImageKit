@@ -8,6 +8,7 @@ import Gallery from './pages/Gallery';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoadingOverlay from "./components/LoadingOverlay";
 import { Toaster } from 'react-hot-toast';
+import MetaTags from './components/MetaTags';
 
 const App = () => (
   <AuthProvider>
@@ -25,6 +26,7 @@ const AppContent = () => {
     <LoadingOverlay />
   ) : (
     <Router>
+      <MetaTags /> {/* Add this component */}
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />

@@ -40,12 +40,16 @@ export const getImageUrl = (fileId) => {
     return `https://imagekitbackend.vercel.app/image/${fileId}`;
 };
 
-export const listImages = async (userId) => {
+export const listImages = async (userId, limit = 9, offset = 0) => {
     try {
         const response = await databases.listDocuments(
             import.meta.env.VITE_APPWRITE_DATABASE_ID,
             import.meta.env.VITE_APPWRITE_COLLECTION_ID,
-            [Query.equal('userId', userId)]
+            [
+                Query.equal('userId', userId),
+                Query.limit(limit),
+                Query.offset(offset)
+            ]
         );
         return response.documents.map(doc => ({
             $id: doc.fileId,
