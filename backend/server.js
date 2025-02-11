@@ -29,4 +29,10 @@ app.get("/image/:fileId", async (req, res) => {
     }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// For local development only
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(process.env.PORT || 5000);
+}
+
+// Export for Vercel
+module.exports = app;
