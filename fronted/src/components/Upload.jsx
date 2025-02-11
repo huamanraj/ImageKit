@@ -1,16 +1,18 @@
 import { useState, useRef } from "react";
 import { uploadImage, getImageUrl } from "../appwrite";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { useAuth } from "../context/AuthContext"; // Import useAuth
+import { useAuth } from "../context/AuthContext";
+import toast from 'react-hot-toast';
 
 const Upload = ({ onUpload }) => {
     const [file, setFile] = useState(null);
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
     const [error, setError] = useState("");
     const fileInputRef = useRef(null);
-    const { user } = useAuth(); // Get user from context
+    const { user } = useAuth();
 
     const handleDrag = (e) => {
         e.preventDefault();
@@ -76,36 +78,59 @@ const Upload = ({ onUpload }) => {
 
     const handleUpload = async () => {
         if (!file) {
-            setError("Please select an image file");
+            toast.error("Please select an image file");
             return;
         }
 
         if (!name.trim()) {
-            setError("Please enter a name for the image");
+            toast.error("Please enter a name for the image");
             return;
         }
 
         if (name.length > 50) {
-            setError("Image name should be less than 50 characters");
+            toast.error("Image name should be less than 50 characters");
             return;
         }
 
         setError("");
         setLoading(true);
-        try {
-            const uploaded = await uploadImage(file, user.$id); // Pass user ID
-            if (uploaded) {
-                onUpload({ id: uploaded.$id, name, url: getImageUrl(uploaded.$id) });
-                setFile(null);
-                setName("");
-                // Show success message
-                alert("Image uploaded successfully!");
+        const uploadPromise = new Promise(async (resolve, reject) => {
+            try {
+                // Simulate progress updates
+                const progressInterval = setInterval(() => {
+                    setProgress(prev => {
+                        if (prev >= 90) {
+                            clearInterval(progressInterval);
+                            return 90;
+                        }
+                        return prev + 10;
+                    });
+                }, 500);
+
+                const uploaded = await uploadImage(file, user.$id);
+                clearInterval(progressInterval);
+                setProgress(100);
+
+                if (uploaded) {
+                    onUpload({ id: uploaded.$id, name, url: getImageUrl(uploaded.$id) });
+                    setFile(null);
+                    setName("");
+                    resolve("Image uploaded successfully!");
+                }
+            } catch (err) {
+                console.error("Upload error:", err);
+                reject(err.message || "Failed to upload image");
+            } finally {
+                setLoading(false);
+                setTimeout(() => setProgress(0), 1000);
             }
-        } catch (err) {
-            console.error("Upload error:", err);
-            setError("Failed to upload image. Please try again. " + (err.message || ""));
-        }
-        setLoading(false);
+        });
+
+        toast.promise(uploadPromise, {
+            loading: 'Uploading...',
+            success: 'Image uploaded successfully!',
+            error: (err) => `Upload failed: ${err}`,
+        });
     };
 
     return (
@@ -185,6 +210,15 @@ const Upload = ({ onUpload }) => {
                 {error && (
                     <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                         <p className="text-red-500 text-sm">{error}</p>
+                    </div>
+                )}
+
+                {progress > 0 && (
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div 
+                            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                            style={{ width: `${progress}%` }}
+                        ></div>
                     </div>
                 )}
 

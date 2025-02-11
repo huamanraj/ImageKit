@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [initializing, setInitializing] = useState(true);
 
     const login = async (email, password) => {
         setLoading(true);
@@ -47,8 +48,27 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const loginAsGuest = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const promise = await account.createAnonymousSession();
+            setUser(promise);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        account.get().then(setUser).catch(() => setUser(null));
+        account.get().then(user => {
+            setUser(user);
+            setInitializing(false);
+        }).catch(() => {
+            setUser(null);
+            setInitializing(false);
+        });
     }, []);
 
     return (
@@ -57,8 +77,10 @@ export const AuthProvider = ({ children }) => {
             login, 
             logout, 
             register, 
+            loginAsGuest, // Add loginAsGuest to the context value
             loading, 
-            error 
+            error,
+            initializing
         }}>
             {children}
         </AuthContext.Provider>

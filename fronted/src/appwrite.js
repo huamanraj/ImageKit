@@ -37,7 +37,7 @@ export const uploadImage = async (file, userId) => {
 };
 
 export const getImageUrl = (fileId) => {
-    return `http://localhost:5000/image/${fileId}`;
+    return `https://imagekitbackend.vercel.app/image/${fileId}`;
 };
 
 export const listImages = async (userId) => {
@@ -59,13 +59,30 @@ export const listImages = async (userId) => {
 
 export const deleteImage = async (fileId) => {
     try {
+        // Delete file from storage
         await storage.deleteFile(
             import.meta.env.VITE_APPWRITE_STORAGE_BUCKET_ID,
             fileId
         );
+
+        // Find and delete the corresponding document
+        const documents = await databases.listDocuments(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+            [Query.equal('fileId', fileId)]
+        );
+
+        if (documents.documents.length > 0) {
+            await databases.deleteDocument(
+                import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+                documents.documents[0].$id
+            );
+        }
+
         return true;
     } catch (error) {
-        console.error(error);
-        return false;
+        console.error("Delete error:", error);
+        throw new Error("Failed to delete image and its data");
     }
 };

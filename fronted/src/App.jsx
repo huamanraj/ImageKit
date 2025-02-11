@@ -1,14 +1,29 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Landing from "./pages/Landing";
 import UploadPage from "./pages/UploadPage";
 import Auth from './pages/Auth';
 import Gallery from './pages/Gallery';
 import ProtectedRoute from './components/ProtectedRoute';
+import LoadingOverlay from "./components/LoadingOverlay";
+import { Toaster } from 'react-hot-toast';
 
 const App = () => (
   <AuthProvider>
+    <>
+      <Toaster position="top-right" />
+      <AppContent />
+    </>
+  </AuthProvider>
+);
+
+const AppContent = () => {
+  const { initializing } = useAuth();
+
+  return initializing ? (
+    <LoadingOverlay />
+  ) : (
     <Router>
       <Navbar />
       <Routes>
@@ -26,7 +41,7 @@ const App = () => (
         } />
       </Routes>
     </Router>
-  </AuthProvider>
-);
+  );
+};
 
 export default App;

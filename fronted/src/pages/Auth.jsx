@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { account } from '../appwrite'; 
 
 const Auth = () => {
-    const { user, login, register, loading, error } = useAuth();
+    const { user, login, register, loginAsGuest, loading, error } = useAuth();
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const Auth = () => {
 
     useEffect(() => {
         if (user) {
-            navigate('/upload');
+            navigate('/gallery');
         }
     }, [user, navigate]);
 
@@ -34,74 +35,92 @@ const Auth = () => {
         });
     };
 
+    const handleGuestLogin = async () => {
+        try {
+            await loginAsGuest();
+        } catch (error) {
+            console.error("Failed to login as guest", error);
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-6">
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                        {isLogin ? 'Welcome Back!' : 'Create Account'}
-                    </h2>
-                    <p className="text-gray-600">
-                        {isLogin ? 'Sign in to your account' : 'Register for a new account'}
-                    </p>
-                </div>
-
-                {error && (
-                    <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm">
-                        {error}
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+            
+            <main className="flex flex-col items-center justify-center flex-1 w-full p-4">
+                <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-6">
+                    <div className="text-center">
+                        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                            {isLogin ? 'Welcome Back!' : 'Create Account'}
+                        </h2>
+                        <p className="text-gray-600">
+                            {isLogin ? 'Sign in to your account' : 'Register for a new account'}
+                        </p>
                     </div>
-                )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {!isLogin && (
+                    {error && (
+                        <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm">
+                            {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {!isLogin && (
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Full Name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-400"
+                                required
+                            />
+                        )}
                         <input
-                            type="text"
-                            name="name"
-                            placeholder="Full Name"
-                            value={formData.name}
+                            type="email"
+                            name="email"
+                            placeholder="Email Address"
+                            value={formData.email}
                             onChange={handleChange}
                             className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-400"
                             required
                         />
-                    )}
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email Address"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-400"
-                        required
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-400"
-                        required
-                    />
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={`w-full py-3 rounded-lg text-white font-semibold
-                                ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}
-                                transition-colors shadow-md`}
-                    >
-                        {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
-                    </button>
-                </form>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-indigo-400"
+                            required
+                        />
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={`w-full py-3 rounded-lg text-white font-semibold
+                                    ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}
+                                    transition-colors shadow-md`}
+                        >
+                            {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
+                        </button>
+                    </form>
 
-                <div className="text-center">
+                    <div className="text-center">
+                        <button
+                            onClick={() => setIsLogin(!isLogin)}
+                            className="text-indigo-600 hover:text-indigo-800 text-sm"
+                        >
+                            {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
+                        </button>
+                    </div>
+
                     <button
-                        onClick={() => setIsLogin(!isLogin)}
-                        className="text-indigo-600 hover:text-indigo-800 text-sm"
+                        onClick={handleGuestLogin}
+                        className="w-full py-3 rounded-lg bg-indigo-500 text-white font-semibold hover:bg-indigo-600 transition-colors shadow-md"
                     >
-                        {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
+                        Login as Guest
                     </button>
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

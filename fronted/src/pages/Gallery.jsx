@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { listImages, deleteImage, getImageUrl } from '../appwrite';
 import ConfirmDialog from '../components/ConfirmDialog';
 import LoadingOverlay from '../components/LoadingOverlay';
+import toast from 'react-hot-toast';
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
@@ -12,6 +13,7 @@ const Gallery = () => {
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [isCopying, setCopying] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const fetchImages = async () => {
     try {
@@ -22,7 +24,7 @@ const Gallery = () => {
       const imagesWithUrls = imagesList.map((img) => ({
         $id: img.$id,
         name: img.name,
-        url: `http://localhost:5000/image/${img.$id}`, // Direct image URL
+        url: `https://imagekitbackend.vercel.app/image/${img.$id}`, // Updated image URL
       }));
 
       console.log("Fetched images with URLs:", imagesWithUrls);
@@ -43,20 +45,42 @@ const Gallery = () => {
 
   const handleCopyLink = async (fileId) => {
     setCopying(fileId);
-    const url = `http://localhost:5000/image/${fileId}`;
-    await navigator.clipboard.writeText(url);
+    const url = `https://imagekitbackend.vercel.app/image/${fileId}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success('Link copied to clipboard!');
+    } catch (error) {
+      toast.error('Failed to copy link');
+    }
     setTimeout(() => setCopying(null), 1000);
   };
 
   const handleDelete = async () => {
     if (deleteId) {
       setIsDeleting(true);
-      const success = await deleteImage(deleteId);
-      if (success) {
-        await fetchImages();
-      }
-      setDeleteId(null);
-      setIsDeleting(false);
+      const deletePromise = new Promise(async (resolve, reject) => {
+        try {
+          const success = await deleteImage(deleteId);
+          if (success) {
+            await fetchImages();
+            resolve('Image and associated data deleted successfully');
+          } else {
+            reject('Failed to delete image and associated data');
+          }
+        } catch (error) {
+          console.error("Delete error:", error);
+          reject(error.message || 'Failed to delete image and associated data');
+        } finally {
+          setDeleteId(null);
+          setIsDeleting(false);
+        }
+      });
+
+      toast.promise(deletePromise, {
+        loading: 'Deleting image and associated data...',
+        success: (msg) => msg,
+        error: (err) => `Delete failed: ${err}`,
+      });
     }
   };
 
@@ -73,7 +97,8 @@ const Gallery = () => {
         {images.map((image) => (
           <div 
             key={image.$id} 
-            className="relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+            className="relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+            tabIndex="0"
           >
             <img
               src={image.url}
@@ -82,7 +107,7 @@ const Gallery = () => {
               loading="lazy"
             />
 
-            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity duration-200">
+            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
               <div className="absolute bottom-0 w-full p-4 space-y-2">
                 <p className="text-white text-sm font-medium truncate">
                   {image.name}
@@ -92,13 +117,14 @@ const Gallery = () => {
                     onClick={() => handleCopyLink(image.$id)}
                     disabled={isCopying === image.$id}
                     className="flex-1 px-3 py-1.5 text-sm bg-white/90 text-gray-900 rounded-md hover:bg-white transition-colors duration-200 disabled:bg-green-500 disabled:text-white"
+                    aria-label={`Copy link for ${image.name}`}
                   >
                     {isCopying === image.$id ? 'Copied!' : 'Copy Link'}
                   </button>
                   <button
                     onClick={() => setDeleteId(image.$id)}
                     className="px-3 py-1.5 text-sm bg-red-500/90 text-white rounded-md hover:bg-red-500 transition-colors duration-200"
-                    aria-label="Delete image"
+                    aria-label={`Delete ${image.name}`}
                   >
                     Delete
                   </button>

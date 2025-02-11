@@ -12,7 +12,7 @@ const Landing = () => {
         }
     }, [user, navigate]);
 
-    // Skip rendering if user is logged in
+    
     if (user) return null;
 
     return (
