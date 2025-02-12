@@ -90,3 +90,35 @@ export const deleteImage = async (fileId) => {
         throw new Error("Failed to delete image and its data");
     }
 };
+
+export const getUserStats = async (userId) => {
+    try {
+        // Get total uploads count
+        const uploads = await databases.listDocuments(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_COLLECTION_ID,
+            [Query.equal('userId', userId)]
+        );
+
+        // Get total posts count
+        const posts = await databases.listDocuments(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_POSTS_COLLECTION_ID,
+            [Query.equal('userId', userId)]
+        );
+
+        return {
+            totalUploads: uploads.total,
+            publishedPosts: posts.total,
+            
+            totalViews: 222
+        };
+    } catch (error) {
+        console.error("Get stats error:", error);
+        return {
+            totalUploads: 0,
+            publishedPosts: 0,
+            totalViews: 222
+        };
+    }
+};

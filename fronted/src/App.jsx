@@ -13,6 +13,7 @@ import CreatePost from "./pages/CreatePost";
 import ViewPost from "./pages/ViewPost";
 import UserPosts from "./pages/UserPosts";
 import EditPost from "./pages/EditPost";
+import Dashboard from "./pages/Dashboard";
 
 
 const App = () => (
@@ -60,6 +61,11 @@ const AppContent = () => {
           <Route path="/edit-post/:slug" element={
             <ProtectedRoute>
               <EditPost />
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
             </ProtectedRoute>
           } />
       </Routes>

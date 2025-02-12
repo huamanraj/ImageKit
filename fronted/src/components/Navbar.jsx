@@ -1,5 +1,5 @@
 import { useAuth } from "../context/AuthContext";
-import { FaSignInAlt, FaSignOutAlt, FaUpload, FaImages, FaBars, FaTimes, FaPenSquare, FaUserCircle } from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt, FaUpload, FaImages, FaBars, FaTimes, FaPenSquare, FaUserCircle, FaHome } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
@@ -14,7 +14,7 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         setIsLoading(true);
-        localStorage.clear(); // Clear local storage
+        localStorage.clear(); 
         await logout();
         setIsLoading(false);
     };
@@ -86,6 +86,7 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center gap-4">
                     {user && (
                         <>
+                            <NavLink to="/dashboard" icon={FaHome} text="Dashboard" />
                             <NavLink to="/upload" icon={FaUpload} text="Upload" />
                             <NavLink to="/gallery" icon={FaImages} text="Gallery" />
                             <NavLink to="/create-post" icon={FaPenSquare} text="Create Post" />
@@ -151,6 +152,7 @@ const Navbar = () => {
                 <div className="flex flex-col gap-4">
                     {user && (
                         <>
+                            <NavLink to="/dashboard" icon={FaHome} text="Dashboard" onClick={toggleMenu} />
                             <NavLink to="/upload" icon={FaUpload} text="Upload" onClick={toggleMenu} />
                             <NavLink to="/gallery" icon={FaImages} text="Gallery" onClick={toggleMenu} />
                             <NavLink to="/create-post" icon={FaPenSquare} text="Create Post" onClick={toggleMenu} />

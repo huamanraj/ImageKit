@@ -15,7 +15,7 @@ const Auth = () => {
 
     useEffect(() => {
         if (user) {
-            navigate('/gallery');
+            navigate('/dashboard');
         }
     }, [user, navigate]);
 
