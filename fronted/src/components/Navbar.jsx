@@ -1,12 +1,13 @@
 import { useAuth } from "../context/AuthContext";
 import { FaSignInAlt, FaSignOutAlt, FaUpload, FaImages, FaBars, FaTimes, FaPenSquare, FaUserCircle, FaHome } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const menuRef = useRef(null);
@@ -14,9 +15,15 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         setIsLoading(true);
-        localStorage.clear(); 
-        await logout();
-        setIsLoading(false);
+        try {
+            localStorage.clear();
+            await logout();
+            navigate('/');  // Redirect to landing page after logout
+        } catch (error) {
+            console.error('Logout failed:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -71,6 +78,28 @@ const Navbar = () => {
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+    const LogoutButton = ({ isMobile = false }) => (
+        <button 
+            onClick={() => { 
+                handleLogout();
+                if (isMobile) toggleMenu();
+            }}
+            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-red-500 hover:bg-red-600 
+                     transition-all duration-200 transform hover:scale-105 active:scale-95 
+                     ${isMobile ? 'w-full' : ''}`}
+            disabled={isLoading}
+        >
+            {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : (
+                <>
+                    <FaSignOutAlt className="text-lg" />
+                    <span>Logout</span>
+                </>
+            )}
+        </button>
+    );
+
     return (
         <nav className="p-4 relative mt-4 bg-gray-600 rounded-full m-1 w-[80%] text-white shadow-lg z-50 ">
             <div className="max-w-7xl mx-auto flex justify-between items-center ">
@@ -94,21 +123,7 @@ const Navbar = () => {
                         </>
                     )}
                     {user ? (
-                        <button 
-                            onClick={handleLogout} 
-                            className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 hover:bg-red-600 
-                                     transition-all duration-200 transform hover:scale-105 active:scale-95"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <div className="w-5 h-5 border-4 border-blue-200 rounded-full animate-spin border-t-blue-500"> </div> 
-                            ) : (
-                                <>
-                                    <FaSignOutAlt className="text-lg" />
-                                    <span>Logout</span>
-                                </>
-                            )}
-                        </button>
+                        <LogoutButton />
                     ) : (
                         <Link 
                             to="/login"
@@ -160,21 +175,7 @@ const Navbar = () => {
                         </>
                     )}
                     {user ? (
-                        <button 
-                            onClick={() => { handleLogout(); toggleMenu(); }}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-500 hover:bg-red-600 
-                                     transition-all duration-200 transform hover:scale-105 active:scale-95 w-full"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <span className="loader"></span> // Add a loader component or CSS here
-                            ) : (
-                                <>
-                                    <FaSignOutAlt className="text-lg" />
-                                    <span>Logout</span>
-                                </>
-                            )}
-                        </button>
+                        <LogoutButton isMobile={true} />
                     ) : (
                         <Link 
                             to="/login"

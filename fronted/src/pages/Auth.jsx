@@ -113,12 +113,17 @@ const Auth = () => {
                         </button>
                     </div>
 
-                    <button
-                        onClick={handleGuestLogin}
-                        className="w-full py-3 rounded-lg bg-indigo-500 text-white font-semibold hover:bg-indigo-600 transition-colors shadow-md"
-                    >
-                        Login as Guest
-                    </button>
+                    <div className="text-center">
+                        <button
+                            onClick={handleGuestLogin}
+                            className="text-gray-900 font-bold cursor-pointer pb-2 hover:text-gray-800 text-sm underline"
+                        >
+                            Continue as Guest
+                        </button>
+                        <p className="text-xs text-red-800 mt-1">
+                            Note: Guest account access will be lost after logout
+                        </p>
+                    </div>
                 </div>
             </main>
         </div>
