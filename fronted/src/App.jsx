@@ -26,8 +26,8 @@ const AppContent = () => {
     <LoadingOverlay />
   ) : (
     <Router>
-      <MetaTags /> {/* Add this component */}
-      <Navbar />
+      <MetaTags /> 
+        <div className="flex justify-center bg-blue-50"> <Navbar /> </div>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/upload" element={

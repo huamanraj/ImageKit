@@ -124,8 +124,9 @@ const Gallery = () => {
                             loading="lazy"
                         />
 
-                        <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity duration-200">
-                            <div className="absolute bottom-0 w-full p-4 space-y-2">
+                        {/* Modified overlay for better mobile experience */}
+                        <div className="absolute inset-0 bg-black/40 sm:opacity-0 sm:hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-200">
+                            <div className="absolute bottom-0 w-full p-3 sm:p-4 space-y-2">
                                 <p className="text-white text-sm font-medium truncate">
                                     {image.name}
                                 </p>
@@ -133,14 +134,14 @@ const Gallery = () => {
                                     <button
                                         onClick={() => handleCopyLink(image.$id)}
                                         disabled={isCopying === image.$id}
-                                        className="flex-1 px-3 py-1.5 text-sm bg-white/90 text-gray-900 rounded-md hover:bg-white transition-colors duration-200 disabled:bg-green-500 disabled:text-white"
+                                        className="flex-1 px-3 py-2 sm:py-1.5 text-sm bg-white/90 text-gray-900 rounded-md hover:bg-white transition-colors duration-200 disabled:bg-green-500 disabled:text-white touch-manipulation"
                                         aria-label={`Copy link for ${image.name}`}
                                     >
                                         {isCopying === image.$id ? 'Copied!' : 'Copy Link'}
                                     </button>
                                     <button
                                         onClick={() => setDeleteId(image.$id)}
-                                        className="px-3 py-1.5 text-sm bg-red-500/90 text-white rounded-md hover:bg-red-500 transition-colors duration-200"
+                                        className="px-4 py-2 sm:py-1.5 text-sm bg-red-500/90 text-white rounded-md hover:bg-red-500 transition-colors duration-200 touch-manipulation"
                                         aria-label={`Delete ${image.name}`}
                                     >
                                         Delete

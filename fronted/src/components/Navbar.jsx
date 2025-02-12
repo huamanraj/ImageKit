@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { FaSignInAlt, FaSignOutAlt, FaUpload, FaImages, FaBars, FaTimes, FaShare, FaFileAlt } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-
+import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -72,12 +72,12 @@ const Navbar = () => {
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     return (
-        <nav className="p-4 bg-gray-800 text-white shadow-lg relative z-50">
-            <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <nav className="p-4 relative mt-4 bg-gray-600 rounded-full m-1 w-[80%] text-white shadow-lg z-50 ">
+            <div className="max-w-7xl mx-auto flex justify-between items-center ">
                 <Link 
                     to="/" 
-                    className="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent
-                             hover:from-purple-500 hover:to-indigo-500 transition-all duration-300"
+                    className="text-2xl font-extrabold text-white bg-clip-text 
+                             hover:from-purple-500 hover:to-indigo-500 transition-all duration-300 font-mono "
                 >
                     ImageKit
                 </Link>
@@ -145,14 +145,14 @@ const Navbar = () => {
                     className="md:hidden text-2xl p-2 hover:bg-gray-700 rounded-lg transition-colors"
                     aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                 >
-                    {isMenuOpen ? <FaTimes /> : <FaBars />}
+                    {isMenuOpen ? <FaTimes /> : <HiOutlineMenuAlt3 />}
                 </button>
             </div>
 
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
                 <div 
-                    className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-40"
+                    className="fixed inset-0 bg-black/40  md:hidden z-40"
                     onClick={() => setIsMenuOpen(false)}
                 />
             )}
