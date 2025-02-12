@@ -9,6 +9,11 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoadingOverlay from "./components/LoadingOverlay";
 import { Toaster } from 'react-hot-toast';
 import MetaTags from './components/MetaTags';
+import CreatePost from "./pages/CreatePost";
+import ViewPost from "./pages/ViewPost";
+import UserPosts from "./pages/UserPosts";
+import EditPost from "./pages/EditPost";
+
 
 const App = () => (
   <AuthProvider>
@@ -41,6 +46,22 @@ const AppContent = () => {
             <Gallery />
           </ProtectedRoute>
         } />
+          <Route path="/create-post" element={
+            <ProtectedRoute>
+              <CreatePost />
+            </ProtectedRoute>
+          } />
+          <Route path="/post/:slug" element={<ViewPost />} />
+          <Route path="/my-posts" element={
+            <ProtectedRoute>
+              <UserPosts />
+            </ProtectedRoute>
+          } />
+          <Route path="/edit-post/:slug" element={
+            <ProtectedRoute>
+              <EditPost />
+            </ProtectedRoute>
+          } />
       </Routes>
     </Router>
   );

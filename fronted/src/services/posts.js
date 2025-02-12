@@ -1,4 +1,5 @@
-import { ID, Query, databases } from "./config";
+import {  databases } from "../appwrite";
+import { ID, Query, } from 'appwrite'
 
 export const createPost = async (title, content, userId) => {
     try {
@@ -52,5 +53,37 @@ export const getPostBySlug = async (slug) => {
     } catch (error) {
         console.error("Get post error:", error);
         return null;
+    }
+};
+
+export const deletePost = async (postId) => {
+    try {
+        await databases.deleteDocument(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_POSTS_COLLECTION_ID,
+            postId
+        );
+        return true;
+    } catch (error) {
+        console.error("Delete post error:", error);
+        throw error;
+    }
+};
+
+export const updatePost = async (postId, { title, content }) => {
+    try {
+        const post = await databases.updateDocument(
+            import.meta.env.VITE_APPWRITE_DATABASE_ID,
+            import.meta.env.VITE_APPWRITE_POSTS_COLLECTION_ID,
+            postId,
+            {
+                title,
+                content
+            }
+        );
+        return post;
+    } catch (error) {
+        console.error("Update post error:", error);
+        throw error;
     }
 };
