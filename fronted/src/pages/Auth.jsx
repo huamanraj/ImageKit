@@ -44,7 +44,7 @@ const Auth = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[89vh] bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+        <div className="flex flex-col items-center justify-center min-h-[85vh] bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
             
             <main className="flex flex-col items-center justify-center flex-1 w-full p-4">
                 <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-6">
