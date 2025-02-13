@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { getPosts, deletePost } from '../services/posts';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { CiLink } from "react-icons/ci";
 
 const PostCard = ({ post, onDelete }) => {
     const navigate = useNavigate();
@@ -28,6 +29,18 @@ const PostCard = ({ post, onDelete }) => {
         navigate(`/edit-post/${post.slug}`, { state: { post } });
     };
 
+    const handleShare = (e) => {
+        e.preventDefault();
+        const url = `${window.location.origin}/post/${post.slug}`;
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                toast.success('Link copied to clipboard!');
+            })
+            .catch(() => {
+                toast.error('Failed to copy link');
+            });
+    };
+
     return (
         <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow h-[250px] w-full flex flex-col justify-between p-4">
             <div>
@@ -35,8 +48,15 @@ const PostCard = ({ post, onDelete }) => {
                     <h2 className="text-xl font-bold text-gray-800 line-clamp-2">{truncatedTitle}</h2>
                     <div className="flex gap-2">
                         <button 
+                            onClick={handleShare}
+                            className="text-gray-500 cursor-pointer hover:text-green-900 hover:bg-gray-300 rounded-full transition-colors"
+                            title="Share"
+                        >
+                            <CiLink size={25} />
+                        </button>
+                        <button 
                             onClick={handleEdit}
-                            className="text-gray-500 hover:text-blue-500 transition-colors"
+                            className="text-gray-500 hover:bg-gray-300 rounded-full cursor-pointer hover:text-blue-600 transition-colors"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -44,7 +64,7 @@ const PostCard = ({ post, onDelete }) => {
                         </button>
                         <button 
                             onClick={handleDelete}
-                            className="text-gray-500 hover:text-red-500 transition-colors"
+                            className="text-gray-500 hover:bg-gray-300 rounded-full cursor-pointer hover:text-red-500 transition-colors"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
